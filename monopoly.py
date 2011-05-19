@@ -1,16 +1,18 @@
 import random
+from chance import *
 
 def __init__(self):
-    self.players = []
-    self.players.append(Player("Riley"))
-    self.players.append(Player("Scott"))
-    b = Board()
+    self.players = [Player("Riley")]
 
 class Board:
+    availableHotels = 12
+    availableHouses = 32
+    freeParking = 0
+    
     def __init__(self):
-        # Properties around the board (every possible space to land)
+        # Properties around the board (every possible space to land on)
         self.properties = (
-            Property("GO", "Special"),
+            Property("GO", "Special"), # 0
             Property("Mediterranean Avenue", "Purple", 60),
             Property("Community Chest", "Special"),
             Property("Baltic Avenue", "Purple", 60),
@@ -20,7 +22,7 @@ class Board:
             Property("Chance", "Special"),
             Property("Vermont Avenue", "Light Blue", 100),
             Property("Connecticut Avenue", "Light Blue", 120),
-            Property("Jail", "Special"),
+            Property("Jail", "Special"), # 10
             Property("St. Charles Place", "Magenta", 140),
             Property("Electric Company", "Utility", 150),
             Property("States Avenue", "Magenta", 140),
@@ -30,7 +32,7 @@ class Board:
             Property("Community Chest", "Special"),
             Property("Tennessee Avenue", "Orange", 180),
             Property("New York Avenue", "Orange", 200),
-            Property("Free Parking", "Special"),
+            Property("Free Parking", "Special"), # 20
             Property("Kentucky Avenue", "Red", 220),
             Property("Chance", "Special"),
             Property("Indiana Avenue", "Red", 220),
@@ -40,7 +42,7 @@ class Board:
             Property("Ventnor Avenue", "Yellow", 260),
             Property("Water Works", "Utility", 150),
             Property("Marvin Gardens", "Yellow", 280),
-            Property("GO TO JAIL", "Special"),
+            Property("GO TO JAIL", "Special"), # 30
             Property("Pacific Avenue", "Green", 300),
             Property("North Carolina Avenue", "Green", 300),
             Property("Community Chest", "Special"),
@@ -55,15 +57,24 @@ class Board:
         # Chance cards
         self.chance = [
             Chance(
+                "Advance to Go (Collect $200)",
+                advanceToGo()
+            ),
+            Chance(
+                "Advance to Illinois Ave.",
+                advanceToIllinoisAve()
+            ),
+            Chance(
+                """Advance token to nearest Utility. If unowned, you may buy it
+                from the Bank. If owned, throw dice and pay owner a total of
+                ten times the amount thrown.""",
+            ),
+            Chance(
                 "Bank pays you dividend of $50",
-                "",
-                lambda x: x + 50
             ),
             Chance(
                 """Make general repairs on all your property - for each house
                 pay $25 - for each hotel $100""",
-                "",
-                lambda x,y,z: x - (25*y) - (100*z)
             )
         ]
         
@@ -77,25 +88,30 @@ class Chance:
         self.f = f
 
 class Property:
+    hotel = False
+    houses = 0
+    
     def __init__(self, name, group, price=0, mandatory=False):
         self.name = name
         self.group = group
         self.price = price
         self.mandatory = mandatory
         self.isPurchasable = not (self.group == "Special" or self.group == "Tax")
-        self.owner = "" # name of owner, if any
+        self.owner = Player # this will be a Player object
 
 class Player:
     pos = 0 # starting position on the board, from 0 to 39
     status = "OK" # OK, In Jail, Loser, Winner
     doublesCounter = 0
+    hasGetOutOfJailFreeCard = False
     
     def __init__(self, name, money=1500):
         self.name = name
         self.money = money
     
-    def moveToPos(self, pos):
+    def moveTo(self, pos, passGo=True):
         self.pos = pos
+        if self.pos > pos and passGo: self.money += 200
     
     def setStatus(self, status):
         self.status = status
