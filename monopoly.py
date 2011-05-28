@@ -64,13 +64,50 @@ class Board:
                 """Advance token to nearest Utility. If unowned, you may buy it
                 from the Bank. If owned, throw dice and pay owner a total of
                 ten times the amount thrown.""",
+                advanceToNearestUtility()
             ),
             Chance(
                 "Bank pays you dividend of $50",
             ),
             Chance(
+                "Go back 3 spaces",
+                goBack()
+            ),
+            Chance(
+                "Go directly to Jail -- do not pass Go, do not collect $200",
+                goDirectlyToJail()
+            ),
+            Chance(
                 """Make general repairs on all your property - for each house
                 pay $25 - for each hotel $100""",
+                makeGeneralRepairs()
+            ),
+            Chance(
+                "Pay poor tax of $15",
+                payPoorTax()
+            ),
+            Chance(
+                """Take a trip to Reading Railroad -- if you pass Go collect
+                $200""",
+                advanceToReadingRailroad()
+            ),
+            Chance(
+                """Take a walk on the Boardwalk -- advance token to board
+                walk""",
+                advanceToBoardwalk()
+            ),
+            Chance(
+                """You have been elected chairman of the board -- pay each
+                player $50""",
+                payEachPlayer()
+            ),
+            Chance(
+                "Your building loan matures -- collect $150",
+                buildingLoan()
+            ),
+            Chance(
+                "You have won a crossword competition -- collect $100",
+                crosswordCompetition()
             )
         ]
         
@@ -78,9 +115,8 @@ class Board:
         self.communityChest = []
 
 class Chance:
-    def __init__(self, text, advanceTo, f):
+    def __init__(self, text, f):
         self.text = text
-        self.advanceTo = advanceTo
         self.f = f
 
 class Property:
