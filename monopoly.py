@@ -1,8 +1,5 @@
 import random
 
-def __init__(self):
-    self.players = [Player("Riley")]
-
 class Board:
     availableHotels = 12
     availableHouses = 32
