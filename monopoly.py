@@ -1,9 +1,9 @@
 import random
 
 class Board:
-    availableHotels = 12
-    availableHouses = 32
-    freeParking = 0
+    available_hotels = 12
+    available_houses = 32
+    free_parking = 0
     
     def __init__(self):
         # Properties around the board (every possible space to land on)
@@ -54,70 +54,70 @@ class Board:
         self.chance = [
             Chance(
                 "Advance to Go (Collect $200)",
-                advanceToGo()
+                advance_to_go()
             ),
             Chance(
                 "Advance to Illinois Ave.",
-                advanceToIllinoisAve()
+                advance_to_illinois_ave()
             ),
             Chance(
                 """Advance token to nearest Utility. If unowned, you may buy it
                 from the Bank. If owned, throw dice and pay owner a total of
                 ten times the amount thrown.""",
-                advanceToNearestUtility()
+                advance_to_nearest_utility()
             ),
             Chance(
                 "Bank pays you dividend of $50",
             ),
             Chance(
                 "Go back 3 spaces",
-                goBack()
+                go_back()
             ),
             Chance(
                 "Go directly to Jail -- do not pass Go, do not collect $200",
-                goDirectlyToJail()
+                go_directly_to_jail()
             ),
             Chance(
                 """Make general repairs on all your property - for each house
                 pay $25 - for each hotel $100""",
-                makeGeneralRepairs()
+                make_general_repairs()
             ),
             Chance(
                 "Pay poor tax of $15",
-                payPoorTax()
+                pay_poor_tax()
             ),
             Chance(
                 """Take a trip to Reading Railroad -- if you pass Go collect
                 $200""",
-                advanceToReadingRailroad()
+                advance_to_reading_railroad()
             ),
             Chance(
                 """Take a walk on the Boardwalk -- advance token to board
                 walk""",
-                advanceToBoardwalk()
+                advance_to_boardwalk()
             ),
             Chance(
                 """You have been elected chairman of the board -- pay each
                 player $50""",
-                payEachPlayer()
+                pay_each_player()
             ),
             Chance(
                 "Your building loan matures -- collect $150",
-                buildingLoan()
+                building_loan()
             ),
             Chance(
                 "You have won a crossword competition -- collect $100",
-                crosswordCompetition()
+                crossword_competition()
             )
         ]
         
         # Community Chest cards
-        self.communityChest = []
+        self.community_chest = []
 
 class Chance:
-    def __init__(self, text, f):
+    def __init__(self, text, function):
         self.text = text
-        self.f = f
+        self.function = function
 
 class Property:
     hotel = False
@@ -128,44 +128,44 @@ class Property:
         self.group = group
         self.price = price
         self.mandatory = mandatory
-        self.isPurchasable = not (self.group == "Special" or self.group == "Tax")
+        self.is_purchasable = not (self.group == "Special" or self.group == "Tax")
         self.owner = Player # this will be a Player object
 
 class Player:
     pos = 0 # starting position on the board, from 0 to 39
     status = "OK" # OK, In Jail, Loser, Winner
-    doublesCounter = 0
-    hasGetOutOfJailFreeCard = False
+    doubles_counter = 0
+    has_get_out_of_jail_free_card = False
     
     def __init__(self, name, money=1500):
         self.name = name
         self.money = money
     
-    def moveTo(self, pos, passGo=True):
+    def move_to(self, pos, pass_go=True):
         self.pos = pos
-        if self.pos > pos and passGo: self.money += 200
+        if self.pos > pos and pass_go: self.money += 200
     
-    def setStatus(self, status):
+    def set_status(self, status):
         self.status = status
 
-def rollDice(self, num):
+def roll_dice(self, num_of_dice):
     sides = 6
     result = []
-    for n in range(1, num + 1):
+    for n in range(1, num_of_dice + 1):
         result.append(random.randrange(1, sides + 1))
     return result
 
 # Chance functions
-def advanceToGo(board, player, players):
-    player.moveTo(0)
+def advance_to_go(board, player, players):
+    player.move_to(0)
     return
 
-def advanceToIllinoisAve(board, player, players):
-    player.moveTo(24)
+def advance_to_illinois_ave(board, player, players):
+    player.move_to(24)
     return
 
-def advanceToNearestUtility(board, player, players):
-    player.moveTo(getNearest("Utility", player.pos, board.properties))
+def advance_to_nearest_utility(board, player, players):
+    player.move_to(get_nearest("Utility", player.pos, board.properties))
     if len(board.properties[player.pos].owner.name):
         dice = random.randrange(2, 13)
         player.money -= 10 * dice
@@ -175,8 +175,8 @@ def advanceToNearestUtility(board, player, players):
         pass
     return
 
-def advanceToNearestRailroad(board, player, players):
-    player.moveTo(getNearest("Railroad", player.pos, board.properties))
+def advance_to_nearest_railroad(board, player, players):
+    player.move_to(get_nearest("Railroad", player.pos, board.properties))
     if len(board.properties[player.pos].owner.name):
         # pay owner twice the rent he/she is owed
         pass
@@ -185,28 +185,28 @@ def advanceToNearestRailroad(board, player, players):
         pass
     return
 
-def advanceToStCharlesPlace(board, player, players):
-    player.moveTo(11)
+def advance_to_st_charles_place(board, player, players):
+    player.move_to(11)
     return
 
-def bankPaysDividend(board, player, players):
+def bank_pays_dividend(board, player, players):
     player.money += 50
     return
 
-def getOutOfJailFreeCard(board, player, players):
+def get_out_of_jail_free_card(board, player, players):
     player.hasGetOutOfJailFreeCard = True
     return
 
-def goBack(board, player, players):
-    player.moveTo(player.pos - 3, False)
+def go_back(board, player, players):
+    player.move_to(player.pos - 3, False)
     return
 
-def goDirectlyToJail(board, player, players):
-    player.moveTo(10, False)
-    player.setStatus("In Jail")
+def go_directly_to_jail(board, player, players):
+    player.move_to(10, False)
+    player.set_status("In Jail")
     return
 
-def makeGeneralRepairs(board, player, players):
+def make_general_repairs(board, player, players):
     cost = 0
     for x in player.properties:
         if x.hotel:
@@ -217,35 +217,35 @@ def makeGeneralRepairs(board, player, players):
     board.freeParking += cost
     return
 
-def payPoorTax(board, player, players):
+def pay_poor_tax(board, player, players):
     player.money -= 15
     board.freeParking += 15
     return
 
-def advanceToReadingRailroad(board, player, players):
-    player.moveTo(5)
+def advance_to_reading_railroad(board, player, players):
+    player.move_to(5)
     return
 
-def advanceToBoardwalk(board, player, players):
-    player.moveTo(39)
+def advance_to_boardwalk(board, player, players):
+    player.move_to(39)
     return
 
-def payEachPlayer(board, player, players):
+def pay_each_player(board, player, players):
     for p in players:
         if p.status != "Loser":
             player -= 50
             p += 50
     return
 
-def buildingLoan(board, player, players):
+def building_loan(board, player, players):
     player.money += 150
     return
 
-def crosswordCompetition(board, player, players):
+def crossword_competition(board, player, players):
     player.money += 100
     return
 
-def getNearest(group, pos, properties):
+def get_nearest(group, pos, properties):
     '''Returns index of nearest Utility to the given position'''
     # first look through all the properties from current position to the end
     # of the board
