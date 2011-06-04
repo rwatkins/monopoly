@@ -132,14 +132,13 @@ class Property:
         self.owner = Player # this will be a Player object
 
 class Player:
-    pos = 0 # starting position on the board, from 0 to 39
-    status = "OK" # OK, In Jail, Loser, Winner
-    doubles_counter = 0
-    has_get_out_of_jail_free_card = False
-    
     def __init__(self, name, money=1500):
         self.name = name
         self.money = money
+        self.pos = pos # starting position on the board, from 0 to 39
+        self.status = "OK" # OK, In Jail, Loser, Winner
+        self.doubles_counter = 0
+        self.has_get_out_of_jail_free_card = False
     
     def move_to(self, pos, pass_go=True):
         self.pos = pos
