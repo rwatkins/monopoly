@@ -120,9 +120,6 @@ class Chance:
         self.function = function
 
 class Property:
-    hotel = False
-    houses = 0
-    
     def __init__(self, name, group, price=0, mandatory=False):
         self.name = name
         self.group = group
@@ -130,6 +127,8 @@ class Property:
         self.mandatory = mandatory
         self.is_purchasable = not (self.group == "Special" or self.group == "Tax")
         self.owner = Player # this will be a Player object
+        self.hotel = False
+        self.houses = 0
 
 class Player:
     def __init__(self, name, money=1500):
