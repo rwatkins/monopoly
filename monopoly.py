@@ -1,6 +1,10 @@
 import random
 
 class Board:
+    """
+    The game board containing the Chance and Community Chest cards, and the 40
+    squares around the edge.
+    """
     available_hotels = 12
     available_houses = 32
     free_parking = 0
@@ -115,11 +119,13 @@ class Board:
         self.community_chest = []
 
 class Chance:
+    """A card from the Chance deck."""
     def __init__(self, text, function):
         self.text = text
         self.function = function
 
 class Property:
+    """A single square on the edge of the game board."""
     def __init__(self, name, group, price=0, mandatory=False):
         self.name = name
         self.group = group
@@ -140,6 +146,10 @@ class Player:
         self.has_get_out_of_jail_free_card = False
     
     def move_to(self, pos, pass_go=True):
+        """
+        Moves the Player to a specified square. If the Player passes Go, his
+        money is increased by 200.
+        """
         self.pos = pos
         if self.pos > pos and pass_go: self.money += 200
     
@@ -147,6 +157,10 @@ class Player:
         self.status = status
 
 def roll_dice(self, num_of_dice):
+    """
+    Returns a list of length num_of_dice, with each element containing the
+    number that was rolled on that die.
+    """
     sides = 6
     result = []
     for n in range(1, num_of_dice + 1):
