@@ -331,5 +331,34 @@ def get_nearest(group, pos, properties):
         if x.group == group:
             return properties.index(x)
 
+def run():
+    board = Board()
+    players = []
+    players.append(Player("Riley"))
+    current_round = 0
+
+    print "Welcome to Monopoly!"
+    print "Starting new game..."
+
+    while True:
+        current_round += 1
+        print "Round ", current_round
+
+        for player in players:
+            print "%s's turn" % player.name
+
+            # Player roll's dice
+            dice = roll_dice(2)
+            print "rolled " % player.name, dice
+
+            # Move number of spaces on dice
+            player.move_to(player.pos+sum(dice))
+            current_square = board.properties[player.pos].name
+            print "%s landed on %s" % player.name, current_square
+
+            # End of turn
+            raw_input("Press Enter to end this player's turn")
+            print "End of %s's turn" % player.name
+
 if __name__ == '__main__':
     run()
