@@ -1,4 +1,66 @@
+import copy
 import random
+
+DEFAULT_CHANCE_DECK = [
+    Chance(
+        "Advance to Go (Collect $200)",
+        advance_to_go
+    ),
+    Chance(
+        "Advance to Illinois Ave.",
+        advance_to_illinois_ave
+    ),
+    Chance(
+        """Advance token to nearest Utility. If unowned, you may buy it
+        from the Bank. If owned, throw dice and pay owner a total of
+        ten times the amount thrown.""",
+        advance_to_nearest_utility
+    ),
+    Chance(
+        "Bank pays you dividend of $50",
+        bank_pays_dividend
+    ),
+    Chance(
+        "Go back 3 spaces",
+        go_back
+    ),
+    Chance(
+        "Go directly to Jail -- do not pass Go, do not collect $200",
+        go_directly_to_jail
+    ),
+    Chance(
+        """Make general repairs on all your property - for each house
+        pay $25 - for each hotel $100""",
+        make_general_repairs
+    ),
+    Chance(
+        "Pay poor tax of $15",
+        pay_poor_tax
+    ),
+    Chance(
+        """Take a trip to Reading Railroad -- if you pass Go collect
+        $200""",
+        advance_to_reading_railroad
+    ),
+    Chance(
+        """Take a walk on the Boardwalk -- advance token to board
+        walk""",
+        advance_to_boardwalk
+    ),
+    Chance(
+        """You have been elected chairman of the board -- pay each
+        player $50""",
+        pay_each_player
+    ),
+    Chance(
+        "Your building loan matures -- collect $150",
+        building_loan
+    ),
+    Chance(
+        "You have won a crossword competition -- collect $100",
+        crossword_competition
+    )
+]
 
 class Board:
     """
@@ -55,66 +117,7 @@ class Board:
         )
 
         # Chance cards
-        self.chance = [
-            Chance(
-                "Advance to Go (Collect $200)",
-                advance_to_go
-            ),
-            Chance(
-                "Advance to Illinois Ave.",
-                advance_to_illinois_ave
-            ),
-            Chance(
-                """Advance token to nearest Utility. If unowned, you may buy it
-                from the Bank. If owned, throw dice and pay owner a total of
-                ten times the amount thrown.""",
-                advance_to_nearest_utility
-            ),
-            Chance(
-                "Bank pays you dividend of $50",
-                bank_pays_dividend
-            ),
-            Chance(
-                "Go back 3 spaces",
-                go_back
-            ),
-            Chance(
-                "Go directly to Jail -- do not pass Go, do not collect $200",
-                go_directly_to_jail
-            ),
-            Chance(
-                """Make general repairs on all your property - for each house
-                pay $25 - for each hotel $100""",
-                make_general_repairs
-            ),
-            Chance(
-                "Pay poor tax of $15",
-                pay_poor_tax
-            ),
-            Chance(
-                """Take a trip to Reading Railroad -- if you pass Go collect
-                $200""",
-                advance_to_reading_railroad
-            ),
-            Chance(
-                """Take a walk on the Boardwalk -- advance token to board
-                walk""",
-                advance_to_boardwalk
-            ),
-            Chance(
-                """You have been elected chairman of the board -- pay each
-                player $50""",
-                pay_each_player
-            ),
-            Chance(
-                "Your building loan matures -- collect $150",
-                building_loan
-            ),
-            Chance(
-                "You have won a crossword competition -- collect $100",
-                crossword_competition
-            )
-        ]
+        self.chance = copy.deepcopy(DEFAULT_CHANCE_DECK)
 
         # Community Chest cards
         self.community_chest = []
@@ -331,6 +334,13 @@ def get_nearest(group, pos, properties):
         if x.group == group:
             return properties.index(x)
 
+def special_property(property_name, board, player, players):
+    action = {
+        "Chance": board.chance.pop(),
+        "Pass": lambda: pass,
+    }.get(property_name, "Pass")
+    return action(board=board, player=player, players=players)
+
 def run():
     board = Board()
     players = []
@@ -354,7 +364,17 @@ def run():
             # Move number of spaces on dice
             player.move_to(player.pos+sum(dice))
             current_square = board.properties[player.pos].name
+            current_group = board.properties[player.pos].group
             print "%s landed on %s" % player.name, current_square
+
+            action = {
+                "Special": special_property(property_name=current_square,
+                                            board=board, player=player,
+                                            players=players),
+                "Pass": lambda: pass,
+            }.get(current_group, "Pass")
+
+            action()
 
             # End of turn
             raw_input("Press Enter to end this player's turn")
