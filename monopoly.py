@@ -159,6 +159,10 @@ def run():
                     tax = min(int(round(player.money*0.10)), 200)
                     player.money -= tax
                     board.free_parking += tax
+                elif property_name == "Luxury Tax":
+                    tax = 75
+                    player.money -= tax
+                    board.free_parking += tax
 
             # End of turn
             raw_input("Press Enter to continue... ")
