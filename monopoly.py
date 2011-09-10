@@ -1,6 +1,5 @@
 import copy
 import random
-
 from chance import *
 
 class Property:
@@ -14,6 +13,10 @@ class Property:
         self.owner = None # this will be a Player object
         self.hotel = False
         self.houses = 0
+
+    def __repr__(self):
+        return "<%s(name='%s', group='%s', price=%s)>" % \
+            (self.__class__.__name__, self.name, self.group, self.price)
 
 class Board:
     """
@@ -79,7 +82,6 @@ class Board:
     def reset_chance(self):
         self.chance = copy.deepcopy(DEFAULT_CHANCE_DECK)
 
-
 class Player:
     def __init__(self, name, money=1500, pos=0):
         self.name = name
@@ -123,11 +125,11 @@ def run():
     current_round = 0
 
     print "Welcome to Monopoly!"
-    print "Starting new game...\n"
+    print "Starting new game..."
 
     while True:
         current_round += 1
-        print "Round", current_round, "\n"
+        print "\n\nRound", current_round, "\n"
 
         for player in players:
             print "%s's turn" % player.name
@@ -147,16 +149,20 @@ def run():
                 if property_name == "Chance":
                     if len(board.chance) == 0:
                         board.reset_chance()
+                    # Get random card from deck
                     card = board.chance.pop(random.randrange(len(board.chance)))
                     print "Chance!"
                     print "'%s'" % card.description
+                    # Execute action on card
                     card.func(board=board, player=player, players=players)
-
-            print player
 
             # End of turn
             raw_input("Press Enter to continue... ")
             print "End of %s's turn\n" % player.name
+
+        for player in players:
+            print player
+
 
 if __name__ == '__main__':
     run()
