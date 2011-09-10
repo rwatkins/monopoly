@@ -163,6 +163,14 @@ def run():
                     tax = 75
                     player.money -= tax
                     board.free_parking += tax
+                elif property_name == "Free Parking":
+                    if board.free_parking > 0:
+                        print "Free Parking! %s earns $%s" % \
+                            (player.name, board.free_parking)
+                        player.money += board.free_parking
+                        board.free_parking = 0
+                    else:
+                        print "Free Parking is empty :("
 
             # End of turn
             raw_input("Press Enter to continue... ")
