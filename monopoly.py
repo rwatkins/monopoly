@@ -155,6 +155,10 @@ def run():
                     print "'%s'" % card.description
                     # Execute action on card
                     card.func(board=board, player=player, players=players)
+                elif property_name == "Income Tax":
+                    tax = min(int(round(player.money*0.10)), 200)
+                    player.money -= tax
+                    board.free_parking += tax
 
             # End of turn
             raw_input("Press Enter to continue... ")
@@ -162,7 +166,6 @@ def run():
 
         for player in players:
             print player
-
 
 if __name__ == '__main__':
     run()
