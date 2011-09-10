@@ -115,14 +115,6 @@ def roll_dice(num_of_dice=1):
         result.append(random.randrange(1, sides+1))
     return result
 
-#def special_property(property_name, board, player, players):
-#    """Run the given property_name's function"""
-#    action = {
-#        "Chance": board.chance.pop().func,
-#        "Pass": False,
-#    }.get(property_name, "Pass")
-#    return action(board=board, player=player, players=players)
-
 def run():
     board = Board()
     players = []
@@ -163,7 +155,7 @@ def run():
             print player
 
             # End of turn
-            #raw_input("Press Enter to end this player's turn")
+            raw_input("Press Enter to continue... ")
             print "End of %s's turn\n" % player.name
 
 if __name__ == '__main__':
