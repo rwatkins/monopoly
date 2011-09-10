@@ -172,12 +172,12 @@ def run():
                     else:
                         print "Free Parking is empty :("
 
-            # End of turn
-            raw_input("Press Enter to continue... ")
             print "End of %s's turn\n" % player.name
 
         for player in players:
             print player
+
+        raw_input("End of round. Press Enter to continue... ")
 
 if __name__ == '__main__':
     run()
