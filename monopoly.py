@@ -122,16 +122,26 @@ def run():
     players = []
     players.append(Player("Riley"))
     players.append(Player("Scott"))
+    players.append(Player("Elizabeth"))
     current_round = 0
+    players_in_play = len(players)
+    game_over = False
 
     print "Welcome to Monopoly!"
     print "Starting new game..."
 
     while True:
         current_round += 1
-        print "\n\nRound", current_round, "\n"
+        print "\n\n###### Round", current_round, "######\n"
 
         for player in players:
+            if game_over == True:
+                break
+
+            if player.status == "Out":
+                print "## Skip %s's turn, player out of money ##\n" % player.name
+                continue
+
             print "%s's turn" % player.name
 
             # Player roll's dice
@@ -140,13 +150,12 @@ def run():
 
             # Move number of spaces on dice
             player.move_to(player.pos+sum(dice))
-            property_name = board.properties[player.pos].name
-            propery_group = board.properties[player.pos].group
-            print "%s landed on %s (#%s)" % (player.name, property_name,
+            prop = board.properties[player.pos]
+            print "%s landed on %s (#%s)" % (player.name, prop.name,
                                              player.pos)
 
-            if propery_group == "Special":
-                if property_name == "Chance":
+            if prop.group == "Special":
+                if prop.name == "Chance":
                     if len(board.chance) == 0:
                         board.reset_chance()
                     # Get random card from deck
@@ -155,15 +164,15 @@ def run():
                     print "'%s'" % card.description
                     # Execute action on card
                     card.func(board=board, player=player, players=players)
-                elif property_name == "Income Tax":
+                elif prop.name == "Income Tax":
                     tax = min(int(round(player.money*0.10)), 200)
                     player.money -= tax
                     board.free_parking += tax
-                elif property_name == "Luxury Tax":
+                elif prop.name == "Luxury Tax":
                     tax = 75
                     player.money -= tax
                     board.free_parking += tax
-                elif property_name == "Free Parking":
+                elif prop.name == "Free Parking":
                     if board.free_parking > 0:
                         print "Free Parking! %s earns $%s" % \
                             (player.name, board.free_parking)
@@ -171,13 +180,65 @@ def run():
                         board.free_parking = 0
                     else:
                         print "Free Parking is empty :("
+            elif prop.group == "Railroad":
+                pass
+            elif prop.group == "Utility":
+                pass
+            else:
+                if prop.owner is None:
+                    if buy_prop(player, prop):
+                        print "%s buys %s for $%s" % (player.name, prop.name,
+                                                      prop.price)
+                    else:
+                        print "%s is unable to buy %s" % (player.name,
+                                                          prop.name)
+                else:
+                    rent = int(prop.price * 1.0)
+                    print "%s owns %s, %s pays $%s rent." % (prop.owner.name,
+                                                             prop.name,
+                                                             player.name,
+                                                             str(rent))
+                    player.money -= rent
+                    prop.owner.money += rent
+
+            if player.money < 0:
+                print "%s ran out of money! %s is out of the game.\n" % \
+                    (player.name, player.name)
+                player.status = "Out"
+                for prop in board.properties:
+                    if prop.owner is not None and prop.owner.name == player.name:
+                        prop.owner = None
+                player.properties = []
+                players_in_play -= 1
+                if players_in_play == 1:
+                    game_over = True
+                    break
 
             print "End of %s's turn\n" % player.name
 
         for player in players:
             print player
 
-        raw_input("End of round. Press Enter to continue... ")
+        if game_over == True:
+            break
+
+        #raw_input("End of round. Press Enter to continue... ")
+
+    for player in players:
+        if player.status != "Out":
+            winner_name = player.name
+            break
+    print "\n%s wins !" % winner_name
+    return
+
+def buy_prop(player, prop):
+    if player.money >= prop.price:
+        player.money -= prop.price
+        prop.owner = player
+        player.properties.append(prop)
+        return True
+    else:
+        return False
 
 if __name__ == '__main__':
     run()
