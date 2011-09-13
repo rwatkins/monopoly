@@ -141,7 +141,7 @@ class Player:
         if color_group == "":
             return len(self.properties)
         else:
-            return len([p for p in self.properties if p == color_group])
+            return len([p for p in self.properties if p.group == color_group])
 
 def roll_dice(num_of_dice=1):
     """
@@ -218,7 +218,22 @@ def run():
                     else:
                         print "Free Parking is empty :("
             elif prop.group == "Railroad":
-                pass
+                if prop.owner is None:
+                    if buy_prop(player, prop):
+                        print "%s buys %s for $%s" % (player.name, prop.name,
+                                                      prop.price)
+                    else:
+                        print "%s is unable to buy %s" % (player.name,
+                                                          prop.name)
+                else:
+                    rent_scale = {1: 25, 2: 50, 3: 100, 4: 200}
+                    rent = rent_scale[prop.owner.num_properties_owned(prop.group)]
+                    print "%s owns %s, %s pays $%s rent." % (prop.owner.name,
+                                                             prop.name,
+                                                             player.name,
+                                                             str(rent))
+                    player.money -= rent
+                    prop.owner.money += rent
             elif prop.group == "Utility":
                 pass
             else:
