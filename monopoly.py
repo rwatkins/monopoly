@@ -132,6 +132,17 @@ class Player:
                 count += 1
         return count == group_count[color_group]
 
+    def num_properties_owned(self, color_group=""):
+        """
+        Returns the number of properties owned that belong to the specified
+        color group. If no color group is given, return number of total
+        properties owned.
+        """
+        if color_group == "":
+            return len(self.properties)
+        else:
+            return len([p for p in self.properties if p == color_group])
+
 def roll_dice(num_of_dice=1):
     """
     Returns a list of length num_of_dice, with each element containing the
