@@ -113,8 +113,9 @@ def pay_each_player(**kwargs):
     assert "player" in kwargs.keys(), "'player' not found in arguments"
     players, player = kwargs["players"], kwargs["player"]
     for p in players:
-        player.money -= 50
-        p.money += 50
+        if p.status != "Out":
+            player.money -= 50
+            p.money += 50
     return
 
 def building_loan(**kwargs):
