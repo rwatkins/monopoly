@@ -168,6 +168,11 @@ def run():
     print "Starting new game..."
 
     while True:
+        # End the game at round 2000
+        if current_round >= 2000:
+            game_over = True
+            print "\nReached", current_round, "rounds. Game over."
+            break
         current_round += 1
         print "\n\n###### Round", current_round, "######\n"
 
