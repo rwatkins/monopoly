@@ -289,6 +289,7 @@ def run():
     return
 
 def buy_prop(player, prop):
+    """Returns True if the purchase was successful."""
     if player.money >= prop.price:
         player.money -= prop.price
         prop.owner = player
