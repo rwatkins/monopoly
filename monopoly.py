@@ -71,6 +71,11 @@ class Board:
             Property("Boardwalk", "Blue", 400),
         )
 
+        # group_count is a dict containing the number of properties in each
+        # color group. It is used to determine if a player owns all properties
+        # of a particular color group.
+        self.group_count = self.get_group_count()
+
         # Chance cards
         self.chance = copy.deepcopy(DEFAULT_CHANCE_DECK)
 
@@ -81,6 +86,16 @@ class Board:
 
     def reset_chance(self):
         self.chance = copy.deepcopy(DEFAULT_CHANCE_DECK)
+
+    def get_group_count(self):
+        group_count = dict()
+        p_sorted = sorted([p.group for p in self.properties])
+        for p in p_sorted:
+            if p in group_count.keys():
+                group_count[p] += 1
+            else:
+                group_count[p] = 1
+        return group_count
 
 class Player:
     def __init__(self, name, money=1500, pos=0):
@@ -105,6 +120,17 @@ class Player:
         if self.pos > new_pos and pass_go:
             self.money += 200
         self.pos = new_pos
+
+    def owns_group(self, color_group, group_count):
+        """
+        Returns True if the player owns all properties in the given color
+        group. Property counts must be set in the group_count dict argument.
+        """
+        count = 0
+        for p in self.properties:
+            if p.group == color_group:
+                count += 1
+        return count == group_count[color_group]
 
 def roll_dice(num_of_dice=1):
     """
