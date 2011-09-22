@@ -132,6 +132,12 @@ def crossword_competition(**kwargs):
     player.money += 100
     return
 
+def advance_to_st_charles_place(**kwargs):
+    """(Chance card text here)"""
+    assert "player" in kwargs.keys(), "'player' not found in arguments"
+    player.move_to(11)
+    return
+
 def get_nearest(group, pos, properties):
     """Returns index of nearest Utility to the given position"""
     # first look through all the properties from current position to the end
@@ -153,10 +159,6 @@ def get_nearest(group, pos, properties):
 #    else:
 #        # prompt for purchase
 #        pass
-#    return
-#
-#def advance_to_st_charles_place(**kwargs):
-#    player.move_to(11)
 #    return
 #
 #def get_out_of_jail_free_card(**kwargs):
@@ -221,5 +223,9 @@ DEFAULT_CHANCE_DECK = [
     Chance(
         "You have won a crossword competition -- collect $100",
         crossword_competition
+    ),
+    Chance(
+        "(Chance card text here)",
+        advance_to_st_charles_place
     )
 ]
