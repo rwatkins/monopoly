@@ -186,7 +186,7 @@ def run():
 
             print "%s's turn" % player.name
 
-            # Player roll's dice
+            # Player rolls dice
             dice = roll_dice(2)
             print "%s rolled %s" % (player.name, dice)
 
