@@ -2,7 +2,7 @@ import copy
 import random
 from chance import *
 
-class Property:
+class Property(object):
     """A single square on the game board."""
     def __init__(self, name, group, price=0, mandatory=False):
         self.name = name
@@ -18,7 +18,7 @@ class Property:
         return "<%s(name='%s', group='%s', price=%s)>" % \
             (self.__class__.__name__, self.name, self.group, self.price)
 
-class Board:
+class Board(object):
     """
     The game board containing the Chance and Community Chest cards, and the 40
     squares around the edge.
@@ -97,7 +97,7 @@ class Board:
                 group_count[p] = 1
         return group_count
 
-class Player:
+class Player(object):
     def __init__(self, name, money=1500, pos=0):
         self.name = name
         self.money = money

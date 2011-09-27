@@ -1,4 +1,4 @@
-class Chance:
+class Chance(object):
     """A card from the Chance deck."""
     def __init__(self, description, func):
         self.description = description
