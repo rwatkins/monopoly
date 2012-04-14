@@ -150,7 +150,7 @@ def roll_dice(num_of_dice=1):
     """
     sides = 6
     result = []
-    for n in range(1, num_of_dice+1):
+    for n in xrange(num_of_dice):
         result.append(random.randrange(1, sides+1))
     return result
 
@@ -230,7 +230,7 @@ def run():
                     else:
                         print "%s is unable to buy %s" % (player.name,
                                                           prop.name)
-                else:
+                elif player is not prop.owner:
                     rent_scale = {1: 25, 2: 50, 3: 100, 4: 200}
                     rent = rent_scale[prop.owner.num_properties_owned(prop.group)]
                     print "%s owns %s, %s pays $%s rent." % (prop.owner.name,
@@ -239,6 +239,8 @@ def run():
                                                              str(rent))
                     player.money -= rent
                     prop.owner.money += rent
+                else:
+                    print "%s already owns %s." % (player.name, prop.name)
             elif prop.group == "Utility":
                 pass
             else:
