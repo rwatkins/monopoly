@@ -282,8 +282,11 @@ def run():
 
     for player in players:
         if player.status != "Out":
-            winner_name = player.name
-            break
+            winner = player
+            for p in players:
+                if winner.money < p.money:
+                    winner = p
+            winner_name = winner.name
     print "\n%s wins !" % winner_name
     return
 
