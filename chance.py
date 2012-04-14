@@ -135,6 +135,7 @@ def crossword_competition(**kwargs):
 def advance_to_st_charles_place(**kwargs):
     """(Chance card text here)"""
     assert "player" in kwargs.keys(), "'player' not found in arguments"
+    player = kwargs["player"]
     player.move_to(11)
     return
 
