@@ -149,10 +149,7 @@ def roll_dice(num_of_dice=1):
     number that was rolled on that die.
     """
     sides = 6
-    result = []
-    for n in xrange(num_of_dice):
-        result.append(random.randrange(1, sides+1))
-    return result
+    return [random.randrange(1, sides+1) for _ in xrange(num_of_dice)]
 
 def run():
     board = Board()
