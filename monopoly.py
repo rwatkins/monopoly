@@ -286,8 +286,7 @@ def run():
             for p in players:
                 if winner.money < p.money:
                     winner = p
-            winner_name = winner.name
-    print "\n%s wins !" % winner_name
+    print "\n%s wins !" % winner.name
     return
 
 def buy_prop(player, prop):
