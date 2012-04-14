@@ -11,7 +11,7 @@ class Property(object):
         self.mandatory = mandatory
         self.is_purchasable = self.group != "Special" and self.group != "Tax"
         self.owner = None # this will be a Player object
-        self.hotel = False
+        self.hotel = 0
         self.houses = 0
 
     def __repr__(self):
@@ -88,7 +88,7 @@ class Board(object):
         self.chance = copy.deepcopy(DEFAULT_CHANCE_DECK)
 
     def get_group_count(self):
-        group_count = dict()
+        group_count = {}
         p_sorted = sorted([p.group for p in self.properties])
         for p in p_sorted:
             if p in group_count.keys():
@@ -157,6 +157,7 @@ def run():
     players.append(Player("Riley"))
     players.append(Player("Scott"))
     players.append(Player("Elizabeth"))
+    players.append(Player("Rosalie"))
     current_round = 0
     players_in_play = len(players)
     game_over = False
@@ -166,7 +167,7 @@ def run():
 
     while True:
         # End the game at round 1000
-        if current_round >= 1000:
+        if current_round >= 10000:
             game_over = True
             print "\nReached", current_round, "rounds. Game over."
             break
@@ -228,12 +229,13 @@ def run():
                         print "%s is unable to buy %s" % (player.name,
                                                           prop.name)
                 elif player is not prop.owner:
-                    rent_scale = {1: 25, 2: 50, 3: 100, 4: 200}
+                    rent_scale = (None, 25, 50, 100, 200)
                     rent = rent_scale[prop.owner.num_properties_owned(prop.group)]
                     print "%s owns %s, %s pays $%s rent." % (prop.owner.name,
                                                              prop.name,
                                                              player.name,
                                                              str(rent))
+                    rent = rent if player.money >= rent else player.money
                     player.money -= rent
                     prop.owner.money += rent
                 else:
@@ -249,15 +251,16 @@ def run():
                         print "%s is unable to buy %s" % (player.name,
                                                           prop.name)
                 else:
-                    rent = int(prop.price * 1.0)
+                    rent = int(prop.price + prop.price * prop.hotel)
                     print "%s owns %s, %s pays $%s rent." % (prop.owner.name,
                                                              prop.name,
                                                              player.name,
                                                              str(rent))
+                    rent = rent if player.money >= rent else player.money
                     player.money -= rent
                     prop.owner.money += rent
 
-            if player.money < 0:
+            if player.money <= 0:
                 print "%s ran out of money! %s is out of the game.\n" % \
                     (player.name, player.name)
                 player.status = "Out"
@@ -269,6 +272,20 @@ def run():
                 if players_in_play == 1:
                     game_over = True
                     break
+            else:
+                # Buy hotels
+                for p in player.properties:
+                    if p.hotel:
+                        continue
+                    hotel_price = p.price * 4
+                    if board.available_hotels and player.money > hotel_price and\
+                        player.owns_group(p.group, board.group_count):
+                        print "%s buys a hotel on %s for %s\n" % (player.name,
+                                                                  prop.name,
+                                                                  hotel_price)
+                        player.money -= hotel_price
+                        p.hotel = 1
+                        board.available_hotels -= 1
 
             print "End of %s's turn\n" % player.name
 
@@ -287,6 +304,7 @@ def run():
                 if winner.money < p.money:
                     winner = p
     print "\n%s wins !" % winner.name
+    print "\nHotels left: %s" % board.available_hotels
     return
 
 def buy_prop(player, prop):
